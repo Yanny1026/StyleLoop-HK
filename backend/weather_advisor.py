@@ -68,6 +68,31 @@ def get_clothing_suggestions(weather_data):
     
     return suggestions
 
+def get_hko_weather():
+    """
+    為 Streamlit app 提供的便捷函數。
+    獲取香港天文台數據並返回格式化的穿搭建議。
+    """
+    weather = get_weather_data()
+    
+    if not weather:
+        return "無法獲取天氣數據，請檢查網路連接。"
+    
+    temp = weather['temperature']
+    humidity = weather['humidity']
+    is_raining = weather['is_raining']
+    
+    # 格式化天氣信息
+    weather_info = f"🌡️ 溫度: {temp:.1f}°C | 💧 濕度: {humidity:.1f}%" if temp and humidity else "天氣數據缺失"
+    if is_raining:
+        weather_info += " | 🌧️ 有雨"
+    
+    # 獲取建議
+    suggestions = get_clothing_suggestions(weather)
+    suggestions_text = "\n".join([f"✅ {s}" for s in suggestions])
+    
+    return f"{weather_info}\n\n{suggestions_text}"
+
 def main():
     print("正在獲取香港天文台最新天氣數據...")
     
@@ -92,4 +117,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
